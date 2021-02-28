@@ -1,0 +1,13 @@
+.git
+.backup
+.trash
+.ccls-cache
+.tags
+
+*.o
+*.so
+*.a
+*.exe
+a.out
+
+dependences/

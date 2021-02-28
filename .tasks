@@ -1,0 +1,36 @@
+LLIBS=-lGL -lGLEW -lpthread -ldl -lglfw3 -lX11 -lglut -llua
+SRCS=$(VIM_FILEDIR)/src/glad.c
+IDIRS=-I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/harfbuzz -I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include
+
+[make]
+command=make $(VIM_FILENOEXT)
+output=terminal
+cwd=$(VIM_FILEDIR)
+save=2
+[run]
+command:c,cpp=make $(VIM_FILENOEXT) && $(VIM_PATHNOEXT)
+cwd=$(VIM_FILEDIR)
+output=terminal
+pos=floaterm
+save=2
+[build]
+command:c=gcc -Wall -o $(VIM_FILEDIR)/$(VIM_FILENOEXT) $(SRCS) $(VIM_FILEPATH) $(IDIRS) $(LLIBS)
+command:cpp=g++ -Wall -o $(VIM_FILEDIR)/$(VIM_FILENOEXT) $(SRCS) $(VIM_FILEPATH) $(IDIRS) $(LLIBS)
+cwd=$(VIM_FILEDIR)
+output=terminal
+pos=floaterm
+save=2
+[debug]
+command:c=gcc -Wall -g $(VIM_FILENAME) -o $(VIM_PATHNOEXT) $(SRCS) $(IDIRS) $(LLIBS)
+command:cpp=g++ -Wall -g $(VIM_FILENAME) -o $(VIM_PATHNOEXT) $(SRCS) $(IDIRS) $(LLIBS)
+output=terminal
+cwd=$(VIM_FILEDIR)
+save=2
+[compile]
+command:c=gcc -Wall -c $(VIM_FILENAME) $(SRCS) $(IDIRS) $(LLIBS)
+command:cpp=g++ -Wall -c $(VIM_FILENAME) $(SRCS) $(IDIRS) $(LLIBS)
+output=terminal
+cwd=$(VIM_FILEDIR)
+save=2
+
+# vim: set fenc=utf-8 ft=dosini:

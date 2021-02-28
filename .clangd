@@ -1,0 +1,13 @@
+# reference: https://clangd.llvm.org/config.html
+CompileFlags:
+    Add: [
+        # pkg-config --cflags freetype2
+        -I./include,
+        -I/usr/include/freetype2,
+        -I/usr/include/libpng16,
+        -I/usr/include/harfbuzz,
+        -I/usr/include/glib-2.0,
+        -I/usr/lib/glib-2.0/include
+    ]
+
+# vim: set ft=yaml:
