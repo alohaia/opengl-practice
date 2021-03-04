@@ -2,6 +2,7 @@
 .backup
 .trash
 .ccls-cache
+.ctags
 .tags
 
 *.o

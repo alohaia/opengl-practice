@@ -6,6 +6,7 @@
 
 #include <font.h>
 #include <shader.h>
+#include <texture.h>
 
 #include <iostream>
 #include <map>
@@ -38,9 +39,13 @@ int main(int argc, char** argv)
     GLFWwindow* window = glfwCreateWindow(WIDTH, HEIGHT, "LearnOpenGL", nullptr, nullptr); // Windowed
     glfwMakeContextCurrent(window);
 
-    // Initialize GLEW to setup the OpenGL Function pointers
-    glewExperimental = GL_TRUE;
-    glewInit();
+    // glad
+    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
+    {
+        std::cout << "[main]Failed to initialize GLAD" << std::endl;
+        return -1;
+    }
+
 
     // Define the viewport dimensions
     glViewport(0, 0, WIDTH, HEIGHT);

@@ -1,8 +1,8 @@
 # reference: https://clangd.llvm.org/config.html
 CompileFlags:
     Add: [
-        # pkg-config --cflags freetype2
         -I./include,
+        # pkg-config --cflags freetype2
         -I/usr/include/freetype2,
         -I/usr/include/libpng16,
         -I/usr/include/harfbuzz,

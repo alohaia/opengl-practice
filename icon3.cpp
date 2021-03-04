@@ -1,17 +1,12 @@
-#include <glad/glad.h>
-#include <GLFW/glfw3.h>
+#include <headers.h>
 
 #include <iostream>
 #include <unistd.h>
 
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
-
-#include "include/lua_read.h"
-#include "include/shader.h"
-#include "include/texture.h"
-#include "include/camera.h"
+#include <lua_read.h>
+#include <shader.h>
+#include <texture.h>
+#include <camera.h>
 
 struct BgColor
 {
@@ -177,6 +172,9 @@ int main(int argc, char** argv)
         glm::vec3(-1.3f,  1.0f, -1.5f)
     };
 
+    unsigned int lightVAO;
+    glGenVertexArrays(1, &lightVAO);
+
     unsigned int VBO, VAO;
 
     glGenVertexArrays(1, &VAO);
@@ -192,13 +190,14 @@ int main(int argc, char** argv)
     glEnableVertexAttribArray(1);
 
     // textures
-    Texture2D texture1(tex_img1, GL_RGBA);
-    // Texture2D texture1("./textures/awesomeface.png", GL_RGBA);
-    Texture2D texture2(tex_img2, GL_RGB);
-    texture1.use(GL_TEXTURE0);
-    texture2.use(GL_TEXTURE1);
-    myShader.setInt("texture1", 0);                                     // 1 : GL_TEXTURE1
-    myShader.setInt("texture2", 1);                                     // 1 : GL_TEXTURE1
+    TextureImage texture1(tex_img1, GL_RGBA);
+    // TextureImage texture1("./textures/awesomeface.png", GL_RGBA);
+    TextureImage texture2(tex_img2, GL_RGB);
+    // use texture in shader
+    texture1.bind(GL_TEXTURE0);
+    texture2.bind(GL_TEXTURE1);
+    myShader.setInt("texture1", 0);   // 0 : GL_TEXTURE0, texture1
+    myShader.setInt("texture2", 1);   // 1 : GL_TEXTURE1, texture2
 
     // opengl information
     info(argc, argv);
@@ -270,18 +269,17 @@ void processInput(GLFWwindow* window)
     // 两帧间隔长 --> 速度大 --> 移动距离长 --> 实际感觉速度稳定
     int speed_times = 5;
     if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
-        camera.move(UP, deltaTime * speed_times);
+        camera.move(Direction::UP, deltaTime * speed_times);
     if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
-        camera.move(DOWN, deltaTime * speed_times);
+        camera.move(Direction::DOWN, deltaTime * speed_times);
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-        camera.move(FORWARD, deltaTime * speed_times);
+        camera.move(Direction::FORWARD, deltaTime * speed_times);
     if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-        camera.move(BACKWARD, deltaTime * speed_times);
+        camera.move(Direction::BACKWARD, deltaTime * speed_times);
     if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-        camera.move(LEFT, deltaTime * speed_times);
+        camera.move(Direction::LEFT, deltaTime * speed_times);
     if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-        camera.move(RIGHT, deltaTime * speed_times);
-
+        camera.move(Direction::RIGHT, deltaTime * speed_times);
 }
 
 void keycallback(GLFWwindow* window, int key, int scancode, int action, int mode)
@@ -333,9 +331,9 @@ void mousecallback(GLFWwindow* window, double xpos, double ypos)
 void scrollcallback(GLFWwindow* window, double xoffset, double yoffset)
 {
     if (yoffset == -1)
-        camera.zoom(OUT, 0.05);
+        camera.zoom(Zoom::OUT, 0.05);
     if (yoffset == 1)
-        camera.zoom(IN, 0.05);
+        camera.zoom(Zoom::IN, 0.05);
 }
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
