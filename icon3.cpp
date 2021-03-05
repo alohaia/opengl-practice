@@ -78,6 +78,7 @@ int main(int argc, char** argv)
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 #endif // __APPLE__
 
+
     GLFWwindow* window;
     if (fullscreen)
         window = glfwCreateWindow(W_WIDTH, W_HEIGHT, title, glfwGetPrimaryMonitor(), NULL);
@@ -90,17 +91,12 @@ int main(int argc, char** argv)
         glfwTerminate();
         return -1;
     }
+    glfwMakeContextCurrent(window);
+
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
     glfwSetKeyCallback(window, keycallback);
     glfwSetCursorPosCallback(window, mousecallback);
     glfwSetScrollCallback(window, scrollcallback);
-    glfwMakeContextCurrent(window);
-
-    // tell GLFW to capture our mouse
-    // 如此能避免
-    // - 处理窗口边界的问题
-    // - 鼠标初次进入的突变问题
-    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
     // glad
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
@@ -108,6 +104,12 @@ int main(int argc, char** argv)
         std::cout << "[main]Failed to initialize GLAD" << std::endl;
         return -1;
     }
+
+    // tell GLFW to capture our mouse
+    // 如此能避免
+    // - 处理窗口边界的问题
+    // - 鼠标初次进入的突变问题
+    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
     // opengl
     glEnable(GL_DEPTH_TEST);

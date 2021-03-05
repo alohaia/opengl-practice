@@ -1,7 +1,8 @@
-#ifndef MELODY_UNICODE_H_
-#define MELODY_UNICODE_H_
+#ifndef WIDGETS_H_
+#define WIDGETS_H_
 
-#include <stdlib.h>
+#include <cstdlib>
+#include <cstring>
 
 typedef
 struct
@@ -132,7 +133,36 @@ int wctomb(char *s, wchar_t wc)
     return -1;
 }
 
-#endif  // MELODY_UNICODE_H_
+long utfstrlen(const char * str)
+{
+    Tab *t;
+    char const * pc;
+
+    long len = 0;
+    short clen = 0;     // step
+    for(pc = str; *pc != '\0'; pc+=clen)
+    {
+        clen = 0;
+        for(t = tab; t->cmask; t++)
+        {
+            clen++;
+            if((*pc & t->cmask) == t->cval)
+                break;
+        }
+        len++;
+    }
+    // for(t = tab; t->cmask; t++)
+    // {
+    //
+    //     // clen = 0;
+    //     // if(((*pc & t->cmask) == t->cval) && (*pc != '\0'))
+    //     // {
+    //     //     len++;
+    //     // }
+    //     // pc++;
+    // }
+    return len;
+}
 
 // #include <iostream>
 //
@@ -153,3 +183,5 @@ int wctomb(char *s, wchar_t wc)
 //
 //     std::cout << ws[0] << " " << ws[1] << std::endl;
 // }
+
+#endif  // WIDGETS_H_

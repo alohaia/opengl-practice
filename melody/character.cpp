@@ -36,7 +36,7 @@ int main(int argc, char** argv)
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
 
-    GLFWwindow* window = glfwCreateWindow(WIDTH, HEIGHT, "LearnOpenGL", nullptr, nullptr); // Windowed
+    GLFWwindow* window = glfwCreateWindow(WIDTH, HEIGHT, "LearnOpenGL", NULL, NULL); // Windowed
     glfwMakeContextCurrent(window);
 
     // glad
@@ -45,7 +45,6 @@ int main(int argc, char** argv)
         std::cout << "[main]Failed to initialize GLAD" << std::endl;
         return -1;
     }
-
 
     // Define the viewport dimensions
     glViewport(0, 0, WIDTH, HEIGHT);
@@ -74,7 +73,7 @@ int main(int argc, char** argv)
     // // set width to zero to dynamically adjust font width via font hight
     // FT_Set_Pixel_Sizes(face, 0, 48);
 
-    Font font( "/usr/share/fonts/nerd-fonts/JetBrains Mono Regular Nerd Font Complete Mono.ttf");
+    Font font("/usr/share/fonts/nerd-fonts/JetBrains Mono Regular Nerd Font Complete Mono.ttf");
     font.setSize(0, 48);
 
     // load font shape 'X'
@@ -161,7 +160,7 @@ void RenderText(Shader &s, std::string text, GLfloat x, GLfloat y, GLfloat scale
 {
     // 激活对应的渲染状态
     s.use();
-    glUniform3f(glGetUniformLocation(s.ID, "textColor"), color.x, color.y, color.z);
+    glUniform3f(glGetUniformLocation(s.ID, "textColor"), color.r, color.g, color.b);
     glActiveTexture(GL_TEXTURE0);
     glBindVertexArray(VAO);
 

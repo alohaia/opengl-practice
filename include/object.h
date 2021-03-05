@@ -1,5 +1,5 @@
-#ifndef OBJECT_H
-#define OBJECT_H
+#ifndef OBJECT_H_
+#define OBJECT_H_
 
 #include "headers.h"
 #include <iostream>
@@ -38,7 +38,7 @@ protected:
     // Rotation m_rotation  = {glm::vec3(1, 0, 0), 0};
     float m_scale        = 1;
 public:
-    Object(glm::vec3 pos);
+    Object(glm::vec3 pos = glm::vec3(0, 0, 0));
     virtual ~Object(){}
 
     void moveto(glm::vec3);
@@ -49,7 +49,6 @@ public:
 
 Object::Object(glm::vec3 pos)
 {
-    printf("hello");
     m_position = pos;
 }
 
@@ -63,4 +62,4 @@ void Object::moveby(glm::vec3 by)
     m_position += by;
 }
 
-#endif
+#endif  // OBJECT_H_

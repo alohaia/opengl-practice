@@ -284,13 +284,13 @@ int main(int argc, char** argv)
 
     //{{{3 texture
     // texture 1
-    Texture2D texture1("textures/container.jpg", GL_RGB);
+    TextureImage texture1("textures/container.jpg", GL_RGB);
     // texture 2
-    Texture2D texture2("textures/awesomeface.png", GL_RGBA);
+    TextureImage texture2("textures/awesomeface.png", GL_RGBA);
 
     // bind textures on corresponding texture units
-    texture1.use(GL_TEXTURE0);
-    texture2.use(GL_TEXTURE1);
+    texture1.bind(GL_TEXTURE0);
+    texture2.bind(GL_TEXTURE1);
 
     // 设置 unifrom 变量的值需要先激活 shader
     myShader.use();         // glUseProgram(myShader.ID);

@@ -7,9 +7,12 @@ DEPS=${ROOT}/src/glad.c
 CPPC=g++
 CC=gcc
 
-PROGS =	restart version restart2 restart3 icon icon2 icon3 restart2-pure test
+PROGS =	restart version restart2 restart3 icon icon2 icon3 restart2-pure text test
 
 all: $(PROGS)
+
+proj1: proj1.cpp $(DEPS)
+	$(CPPC) proj1.cpp $(DEPS) -o proj1 $(LDLIBS) $(IINC)
 
 restart: restart.cpp $(DEPS)
 	$(CPPC) restart.cpp $(DEPS) -o restart $(LDLIBS) $(IINC)
@@ -34,6 +37,9 @@ icon3: icon3.cpp $(DEPS) include/camera.h
 
 restart2-pure: restart2-pure.cpp $(DEPS)
 	$(CPPC) restart2-pure.cpp $(DEPS) -o restart2-pure $(LDLIBS) $(IINC)
+
+text: text.cpp $(DEPS)
+	$(CPPC) text.cpp $(DEPS) -o text $(LDLIBS) $(IINC)
 
 test: test.cpp $(DEPS)
 	$(CPPC) test.cpp $(DEPS) -o test $(LDLIBS) $(IINC)

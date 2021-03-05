@@ -1,5 +1,4 @@
-#include <glad/glad.h>
-#include <GLFW/glfw3.h>
+#include <headers.h>
 
 #include <iostream>
 #include <unistd.h>
@@ -7,13 +6,6 @@
 #include "include/shader.h"
 #include "include/texture.h"
 
-#define STB_IMAGE_IMPLEMENTATION    // 使预处理器修改头文件，让其只包含相关的函数定义源码，等于是将这个头文件变为一个 .cpp 文件
-#include "include/stb_image.h"
-
-// glm
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
 
 // 2: 你好，三角形
 
@@ -221,9 +213,9 @@ int main()
 
     //{{{3 texture
     // texture 1
-    Texture2D texture1("textures/container.jpg", GL_RGB);
+    TextureImage texture1("textures/container.jpg", GL_RGB);
     // texture 2
-    Texture2D texture2("textures/awesomeface.png", GL_RGBA);
+    TextureImage texture2("textures/awesomeface.png", GL_RGBA);
 
     // 纹理单元 纹理采样器
     // 每个 着色器 有若干个 纹理单元
@@ -239,8 +231,8 @@ int main()
     myShader.setInt("texture2", 1);                                     // 1 : GL_TEXTURE1
 
     // bind textures on corresponding texture units
-    texture1.use(GL_TEXTURE0);
-    texture2.use(GL_TEXTURE1);
+    texture1.bind(GL_TEXTURE0);
+    texture2.bind(GL_TEXTURE1);
 
     std::cout << "GL_TEXTURE0:\t" << GL_TEXTURE0 << std::endl;
     std::cout << "GL_TEXTURE1:\t" << GL_TEXTURE1 << std::endl;

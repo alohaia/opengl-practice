@@ -86,6 +86,7 @@ int main()
     {
         processInput(window);
 
+        // render
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);   // 状态设置函数，设置清空屏幕所用的颜色
         glClear(GL_COLOR_BUFFER_BIT);           // 状态使用函数，清除颜色缓冲之后，整个颜色缓冲都会被填充为glClearColor里所设置的颜色
 

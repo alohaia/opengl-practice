@@ -2,6 +2,8 @@
 #define MELODY_TEXUTRE_H_
 
 #include "headers.h"
+#include "shader.h"
+#include "widgets.h"
 
 #define STB_IMAGE_IMPLEMENTATION    // 使预处理器修改头文件，让其只包含相关的函数定义源码，等于是将这个头文件变为一个 .cpp 文件
 #include "stb_image.h"
@@ -66,7 +68,7 @@ TextureImage::TextureImage(const char * path, GLenum img_type)
     }
     else
     {
-        std::cout << "Failed to load texture" << std::endl;
+        std::cout << "[TextureImage::TextureImage]Failed to load texture" << std::endl;
     }
     stbi_image_free(data);
 }
@@ -89,21 +91,38 @@ private:
     std::map<GLchar, Character> Characters;
 
 public:
-    TextureText(const char * str, const char * font_path, m_Size size = {0, 48});
+    TextureText(const char * font_path, m_Size size = {0, 48}, const char *str = NULL);
     ~TextureText();
+
     void proload();
+    void setString(const char *str);
+    // void render(Shader &s, GLfloat x, GLfloat y, GLfloat scale, glm::vec3 color);
 };
 
-TextureText::TextureText(const char * str, const char * font_path, m_Size size)
+TextureText::TextureText(const char * font_path, m_Size size, const char * str)
 {
     m_str = str;
 
     if (FT_Init_FreeType(&m_ft))
         std::cout << "[TextureText::TextureText]ERROR::FREETYPE: Could not init FreeType Library" << std::endl;
-    if (FT_New_Face(m_ft, "fonts/arial.ttf", 0, &m_face))
+    if (FT_New_Face(m_ft, font_path, 0, &m_face))
         std::cout << "[TextureText::TextureText]ERROR::FREETYPE: Failed to load font" << std::endl;
 
     FT_Set_Pixel_Sizes(m_face, size.width, size.height);
+
+    if(str != NULL)
+    {
+        long len = utfstrlen(str);
+        GLuint *textures = (GLuint *)malloc(sizeof(char) * len);
+        glGenTextures(utfstrlen(str), textures);
+
+        char const *c;
+        for(c = str; *c != '\0'; ++c)
+        {
+            // TODO liu.qihuan@outlook.com 03-04-2021
+            FT_Load_Char(m_face, *c, FT_LOAD_RENDER);
+        }
+    }
 }
 
 TextureText::~TextureText()
@@ -114,13 +133,12 @@ TextureText::~TextureText()
 
 void TextureText::proload()
 {
-    glPixelStorei(GL_UNPACK_ALIGNMENT, 1); //禁用字节对齐限制
     for (GLubyte c = 0; c < 128; c++)
     {
         // 加载字符的字形
         if (FT_Load_Char(m_face, c, FT_LOAD_RENDER))
         {
-            std::cout << "ERROR::FREETYTPE: Failed to load Glyph" << std::endl;
+            std::cout << "[TextureText::preload]ERROR::FREETYTPE: Failed to load Glyph" << std::endl;
             continue;
         }
         // 生成纹理
@@ -153,5 +171,54 @@ void TextureText::proload()
         Characters.insert(std::pair<GLchar, Character>(c, character));
     }
 }
+
+void TextureText::setString(const char *str)
+{
+    m_str = str;
+}
+
+// void TextureText::render(Shader &s, GLfloat x, GLfloat y, GLfloat scale, glm::vec3 color)
+// {
+//     // 激活对应的渲染状态
+//     s.use();
+//     glUniform3f(glGetUniformLocation(s.ID, "textColor"), color.x, color.y, color.z);
+//     glActiveTexture(GL_TEXTURE0);
+//     glBindVertexArray(VAO);
+//
+//     // 遍历文本中所有的字符
+//     std::string::const_iterator c;
+//     for (c = m_str.begin(); c != m_str.end(); c++)
+//     {
+//         Character ch = Characters[*c];
+//
+//         GLfloat xpos = x + ch.Bearing.x * scale;
+//         GLfloat ypos = y - (ch.Size.y - ch.Bearing.y) * scale;
+//
+//         GLfloat w = ch.Size.x * scale;
+//         GLfloat h = ch.Size.y * scale;
+//         // 对每个字符更新VBO
+//         GLfloat vertices[6][4] = {
+//             { xpos,     ypos + h,   0.0, 0.0 },
+//             { xpos,     ypos,       0.0, 1.0 },
+//             { xpos + w, ypos,       1.0, 1.0 },
+//
+//             { xpos,     ypos + h,   0.0, 0.0 },
+//             { xpos + w, ypos,       1.0, 1.0 },
+//             { xpos + w, ypos + h,   1.0, 0.0 }
+//         };
+//         // 在四边形上绘制字形纹理
+//         glBindTexture(GL_TEXTURE_2D, ch.TextureID);
+//         // 更新VBO内存的内容
+//         glBindBuffer(GL_ARRAY_BUFFER, VBO);
+//         glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices);
+//         glBindBuffer(GL_ARRAY_BUFFER, 0);
+//         // 绘制四边形
+//         glDrawArrays(GL_TRIANGLES, 0, 6);
+//         // 更新位置到下一个字形的原点，注意单位是1/64像素
+//         x += (ch.Advance >> 6) * scale; // 位偏移6个单位来获取单位为像素的值 (2^6 = 64)
+//     }
+//     glBindVertexArray(0);
+//     glBindTexture(GL_TEXTURE_2D, 0);
+// }
 
 #endif // MELODY_TEXUTRE_H_

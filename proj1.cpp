@@ -128,9 +128,6 @@ int main (int argc, char** aegv)
     glGenBuffers(1, &EBO);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
-    // 使用线框显示
-    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-
     // 0. 复制数据到缓冲中供 OpenGL 使用
     GLuint VAO, VBO;
     glGenVertexArrays(1, &VAO);
@@ -155,6 +152,9 @@ int main (int argc, char** aegv)
     glBindVertexArray(0);
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+
+    // 使用线框显示
+    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
     // Render loop
     while(!glfwWindowShouldClose(window))
