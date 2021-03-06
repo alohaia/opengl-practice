@@ -7,7 +7,7 @@ DEPS=${ROOT}/src/glad.c
 CPPC=g++
 CC=gcc
 
-PROGS =	restart version restart2 restart3 icon icon2 icon3 restart2-pure text test
+PROGS =	proj1 restart version restart2 restart3 icon icon2 icon3 restart2-pure text test test2
 
 all: $(PROGS)
 
@@ -44,6 +44,8 @@ text: text.cpp $(DEPS)
 test: test.cpp $(DEPS)
 	$(CPPC) test.cpp $(DEPS) -o test $(LDLIBS) $(IINC)
 
+test2: test2.cpp $(DEPS)
+	$(CPPC) test2.cpp $(DEPS) -o test2 $(LDLIBS) $(IINC)
 
 # myls: myls.c
 #     $(CC) $(CFLAGS) myls.c -o myls $(LDLIBS)

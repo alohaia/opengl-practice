@@ -87,8 +87,16 @@ private:
         glm::ivec2 Bearing;    // 从基准线到字形左部/顶部的偏移值
         long     Advance;    // 原点距下一个字形原点的距离
     };
+
     // For preloading `void proload()`
     std::map<GLchar, Character> Characters;
+
+    constexpr static GLuint m_EBO[] = {
+        0, 1, 3,
+        1, 2, 3
+    };
+
+    static bool preloaded;
 
 public:
     TextureText(const char * font_path, m_Size size = {0, 48}, const char *str = NULL);
@@ -98,6 +106,8 @@ public:
     void setString(const char *str);
     // void render(Shader &s, GLfloat x, GLfloat y, GLfloat scale, glm::vec3 color);
 };
+
+static bool preloaded = false;
 
 TextureText::TextureText(const char * font_path, m_Size size, const char * str)
 {
@@ -170,6 +180,7 @@ void TextureText::proload()
         };
         Characters.insert(std::pair<GLchar, Character>(c, character));
     }
+    // preloaded = true;
 }
 
 void TextureText::setString(const char *str)

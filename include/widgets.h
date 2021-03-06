@@ -4,18 +4,16 @@
 #include <cstdlib>
 #include <cstring>
 
-typedef
-struct
+struct Tab
 {
     int cmask;
     int cval;
     int shift;
     long    lmask;
     long    lval;
-} Tab;
+};
 
-static
-Tab tab[] =
+constexpr static Tab tab[] =
 {
     0x80,   0x00,   0*6,    0x7F,       0,          /* 1 byte sequence */
     0xE0,   0xC0,   1*6,    0x7FF,      0x80,       /* 2 byte sequence */
@@ -57,7 +55,7 @@ int mbtowc(wchar_t *p, char *s, size_t n)
     * nc: number of bytes of UTF-8 character
     */
     int c0, c, nc;
-    Tab *t;
+    const Tab *t;
 
     if(s == 0)
         return 0;
@@ -104,7 +102,7 @@ int wctomb(char *s, wchar_t wc)
 {
     long l;
     int c, nc;
-    Tab *t;
+    const Tab *t;
 
     if(s == 0)
         return 0;
@@ -135,7 +133,7 @@ int wctomb(char *s, wchar_t wc)
 
 long utfstrlen(const char * str)
 {
-    Tab *t;
+    const Tab *t;
     char const * pc;
 
     long len = 0;

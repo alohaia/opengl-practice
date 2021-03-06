@@ -1,7 +1,9 @@
 // Headers {{{
 #include <headers.h>
 #include <shader.h>
-#include <texture.h>
+#include <ft2build.h>
+#include FT_FREETYPE_H
+// #include <texture.h>
 // Headers }}}
 
 enum{
@@ -11,9 +13,10 @@ enum{
 
 glm::vec4 bgColor(0.2f, 0.3f, 0.3f, 1.0f);
 
-// GLFW callback functions
+// GLFW callback functions {{{
 void _glfwKeyFunc(GLFWwindow * window, int key, int scancode, int action, int mods);
 void _glfwWindowSizeFunc(GLFWwindow * window, int width, int height);
+// GLFW callback functions }}}
 
 int main(int argc, char** argv)
 {
@@ -54,50 +57,88 @@ int main(int argc, char** argv)
     glfwSetKeyCallback(window, _glfwKeyFunc);
     // Glfw callback functions }}}
 
-    // Data {{{
-    GLfloat vertices[] = {
-        // position
-         0.5f,  0.5f, 0.0f,     // 右上角
-         0.5f, -0.5f, 0.0f,     // 右下角
-        -0.5f, -0.5f, 0.0f,     // 左下角
-        -0.5f,  0.5f, 0.0f      // 左上角
+    // Prepare original objects {{{
+    GLuint indices[2][3] =
+    {
+        {0, 1, 3},
+        {1, 2, 3}
     };
-
-    GLuint indices[] = { // 注意索引从0开始!
-        0, 1, 3, // 第一个三角形
-        1, 2, 3  // 第二个三角形
-    };
-    // Data }}}
 
     GLuint VAO, VBO, EBO;
 
     glGenVertexArrays(1, &VAO);
     glBindVertexArray(VAO);
 
-    glGenBuffers(1, &VBO);
+    // Stored in VAO {{{
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), NULL, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * 6 * 4, NULL, GL_STATIC_DRAW);
 
-    glGenBuffers(1, &EBO);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
-    // position attributes
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (GLvoid *)0);
+    glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, sizeof(GLfloat) * 6 * 4, (void*)0);
     glEnableVertexAttribArray(0);
+    // Stored in VAO }}}
 
-    TextureText text(
-        "/usr/share/fonts/nerd-fonts/JetBrains Mono Regular Nerd Font Complete Mono.ttf",
-        {0, 48},
-        "hello"
+    glad_glBindVertexArray(0);
+    // Prepare original objects }}}
+
+    // Add text {{{
+    Shader shader_text("shaders/text.vs", "shaders/text.fs");
+
+    FT_Library ft;
+    if (FT_Init_FreeType(&ft))
+        std::cout << "ERROR::FREETYPE: Could not init FreeType Library" << std::endl;
+    FT_Face face;
+    if(FT_New_Face(ft, "/usr/share/fonts/nerd-fonts/JetBrains Mono Regular Nerd Font Complete.ttf", 0, &face));
+         std::cout << "ERROR::FREETYPE: Failed to load font" << std::endl;
+    FT_Set_Pixel_Sizes(face, 0, 48);
+
+    FT_Load_Char(face, 'H', FT_LOAD_RENDER);
+
+    GLuint texture_H;
+    glGenTextures(1, &texture_H);
+    glBindTexture(GL_TEXTURE_2D, texture_H);
+    glTextureParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTextureParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTextureParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_LINEAR);
+    glTextureParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+    glTexImage2D
+    (
+        GL_TEXTURE_2D,
+        0,
+        GL_RED,
+        face->glyph->bitmap.width,
+        face->glyph->bitmap.rows,
+        0,
+        GL_RED,
+        GL_UNSIGNED_BYTE,
+        face->glyph->bitmap.buffer
     );
-    text.proload();
 
-    Shader shader("shaders/text.vs", "shaders/text.fs");
-    shader.use();
+    shader_text.use();
+    shader_text.setVec3("textColor", 1, 1, 1);
+    glActiveTexture(GL_TEXTURE0);
 
-    shader.setVec4("bgColor", bgColor.r, bgColor.g, bgColor.b, bgColor.a);
-    shader.setVec4("textColor", 1, 1, 1, 1);
+    GLfloat xpos = 0, ypos = 0;
+    GLfloat h = face->glyph->bitmap.rows;
+    GLfloat w = face->glyph->bitmap.width;
+
+    GLfloat vertices[6][4] = {
+        { xpos + w, ypos + h,   1.0, 0.0 },
+        { xpos + w, ypos,       1.0, 1.0 },
+        { xpos,     ypos,       0.0, 1.0 },
+        { xpos,     ypos + h,   0.0, 0.0 },
+    };
+
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices);
+    // Add text }}}
+
+
+    // shader.setVec4("bgColor", bgColor.r, bgColor.g, bgColor.b, bgColor.a);
+    // shader.setVec4("textColor", 1, 1, 1, 1);
 
     // Render loop {{{
     while(!glfwWindowShouldClose(window))
@@ -105,6 +146,8 @@ int main(int argc, char** argv)
         // Render {{{
         glClearColor(bgColor.r, bgColor.g, bgColor.b, bgColor.a);   // 状态设置函数，设置清空屏幕所用的颜色
         glClear(GL_COLOR_BUFFER_BIT);           // 状态使用函数，清除颜色缓冲之后，整个颜色缓冲都会被填充为glClearColor里所设置的颜色
+        // render text
+        shader_text.use();
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
         // Render }}}
 
@@ -113,6 +156,7 @@ int main(int argc, char** argv)
     }
     // Render loop }}}
 
+    // Optional
     glDeleteVertexArrays(1, &VAO);
     glDeleteBuffers(1, &VBO);
     glDeleteBuffers(1, &EBO);
@@ -123,12 +167,17 @@ int main(int argc, char** argv)
 
 void _glfwKeyFunc(GLFWwindow * window, int key, int scancode, int action, int mods)
 {
-    if(key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
-        glfwSetWindowShouldClose(window, GLFW_TRUE);
-}
-
-void _glfwWindowSizeFunc(GLFWwindow * window, int width, int height)
-{
-    glViewport(0, 0, width, height);
+    if(action == GLFW_PRESS)
+    {
+        switch(key)
+        {
+            case GLFW_KEY_ESCAPE:
+                glfwSetWindowShouldClose(window, GLFW_TRUE);
+                break;
+            case GLFW_KEY_Q:
+                glfwSetWindowShouldClose(window, GLFW_TRUE);
+                break;
+        }
+    }
 }
 // Function difinations }}}
