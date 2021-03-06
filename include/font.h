@@ -1,3 +1,5 @@
+#include "headers.h"
+
 #include <ft2build.h>
 #include FT_FREETYPE_H
 
@@ -14,6 +16,8 @@ public:
     ~Font();
 
     void setSize(unsigned int width, unsigned int hight);
+
+    // operator FT_Library() const { return ft; }
 };
 
 Font::Font(const char * font_path)
@@ -35,3 +39,4 @@ Font::~Font()
     FT_Done_Face(face);
     FT_Done_FreeType(ft);
 }
+

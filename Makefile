@@ -7,12 +7,16 @@ DEPS=${ROOT}/src/glad.c
 CPPC=g++
 CC=gcc
 
-PROGS =	proj1 restart version restart2 restart3 icon icon2 icon3 restart2-pure text test test2
+PROGS =	proj1 proj4-texture restart version restart2 restart3 icon icon2 icon3\
+		restart2-pure text test test2 test3 texture_test
 
 all: $(PROGS)
 
 proj1: proj1.cpp $(DEPS)
 	$(CPPC) proj1.cpp $(DEPS) -o proj1 $(LDLIBS) $(IINC)
+
+proj4-texture: proj4-texture.cpp $(DEPS)
+	$(CPPC) proj4-texture.cpp $(DEPS) -o proj4-texture $(LDLIBS) $(IINC)
 
 restart: restart.cpp $(DEPS)
 	$(CPPC) restart.cpp $(DEPS) -o restart $(LDLIBS) $(IINC)
@@ -46,6 +50,12 @@ test: test.cpp $(DEPS)
 
 test2: test2.cpp $(DEPS)
 	$(CPPC) test2.cpp $(DEPS) -o test2 $(LDLIBS) $(IINC)
+
+test3: test3.cpp $(DEPS)
+	$(CPPC) test3.cpp $(DEPS) -o test3 $(LDLIBS) $(IINC)
+
+texture_test: texture_test.cpp $(DEPS)
+	$(CPPC) texture_test.cpp $(DEPS) -o texture_test $(LDLIBS) $(IINC)
 
 # myls: myls.c
 #     $(CC) $(CFLAGS) myls.c -o myls $(LDLIBS)

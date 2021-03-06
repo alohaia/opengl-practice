@@ -13,6 +13,7 @@
 #include <string>
 #include <map>
 
+// TODO:?初始化和 bind 之间不能有其他初始化
 class Texture
 {
 public:
@@ -23,8 +24,9 @@ public:
 
 void Texture::bind(GLenum texture)
 {
-    // 绑定到指定纹理单元
+    // 指定要绑定到的纹理单元
     glActiveTexture(texture);
+    // 绑定纹理到指定的纹理单元
     glBindTexture(GL_TEXTURE_2D, id);
 }
 
@@ -45,11 +47,6 @@ public:
 
 TextureImage::TextureImage(const char * path, GLenum img_type)
 {
-    int width, height, nrChannels;
-    // 让stb_image.h在图像加载时翻转y轴
-    // 因为OpenGL要求y轴0.0坐标是在图片的底部的，但是图片的y轴0.0坐标通常在顶部。
-    stbi_set_flip_vertically_on_load(true); // tell stb_image.h to flip loaded texture's on the y-axis.
-
     glGenTextures(1, &id);
     glBindTexture(GL_TEXTURE_2D, id);
     // set the texture wrapping parameters
@@ -58,6 +55,11 @@ TextureImage::TextureImage(const char * path, GLenum img_type)
     // set texture filtering parameters
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+    int width, height, nrChannels;
+    // 让stb_image.h在图像加载时翻转y轴
+    // 因为OpenGL要求y轴0.0坐标是在图片的底部的，但是图片的y轴0.0坐标通常在顶部。
+    stbi_set_flip_vertically_on_load(true); // tell stb_image.h to flip loaded texture's on the y-axis.
 
     // The FileSystem::getPath(...) is part of the GitHub repository so we can find files on any IDE/platform; replace it with your own image path.
     unsigned char *data = stbi_load(path, &width, &height, &nrChannels, 0);
