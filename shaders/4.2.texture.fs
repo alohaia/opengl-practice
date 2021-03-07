@@ -12,7 +12,7 @@ void main()
 {
 	// FragColor = texture(texture1, TexCoord);
     // 混合纹理和颜色
-	// FragColor = texture(texture1, TexCoord) * vec4(ourColor, 1.0);
+    // FragColor = texture(texture1, TexCoord) * vec4(ourColor, 1.0);
     // 混合两个纹理后再与颜色混合
-	FragColor = mix(texture(texture1, TexCoord), texture(texture2, TexCoord), 0.2) * vec4(ourColor, 1.0);
+    FragColor = mix(texture(texture1, TexCoord), texture(texture2, TexCoord), 0.2) * vec4(ourColor, 1.0);
 }

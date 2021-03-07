@@ -1,9 +1,9 @@
 #version 460 core
+
 layout (location = 0) in vec2 vCoord;
 layout (location = 1) in vec2 texCoord;
-out vec2 TexCoords;
 
-// uniform mat4 projection;
+out vec2 TexCoords;
 
 void main()
 {

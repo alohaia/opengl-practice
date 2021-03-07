@@ -186,7 +186,6 @@ void RenderText(Shader &s, std::string text, GLfloat x, GLfloat y, GLfloat scale
             { xpos + w, ypos,       1.0, 1.0 },
             { xpos + w, ypos + h,   1.0, 0.0 }
         };
-        std::cout << "xpos: " << xpos << std::endl;
         // 在四边形上绘制字形纹理
         glBindTexture(GL_TEXTURE_2D, ch.TextureID);
         // 更新VBO内存的内容
